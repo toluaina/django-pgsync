@@ -106,9 +106,12 @@ python manage.py pgsync_daemon              # continuous sync (systemd etc.)
 
 `polling` is the default precisely because it needs no superuser-level
 database settings — ideal for hosted Postgres (RDS, Cloud SQL, Supabase)
-where you may not control `wal_level`. Trade-off: sync latency is the poll
-interval rather than milliseconds. When you control the database, `wal`
-gives the lowest overhead real-time sync:
+where you may not control `wal_level`. Two trade-offs: sync latency is the
+poll interval rather than milliseconds, and **deleting a root row leaves a
+stale document in the index** (there is no delete record to observe;
+child-row deletes are fine since the parent document is rebuilt). If you
+hard-delete root rows, use `wal`/`event` mode or a soft-delete flag. When
+you control the database, `wal` gives the lowest overhead real-time sync:
 
 ```python
 PGSYNC = {"MODE": "wal", ...}
