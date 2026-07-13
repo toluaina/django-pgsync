@@ -93,7 +93,21 @@ needed.
 python manage.py pgsync_schema              # inspect generated schema JSON
 python manage.py pgsync_bootstrap           # one-time setup for the mode
 python manage.py pgsync_pull                # one-shot sync, then exit
+python manage.py pgsync_status              # verify rows == documents
 python manage.py pgsync_daemon              # continuous sync (systemd etc.)
+```
+
+## Example project
+
+A complete runnable demo — models, index, seed data, sync, and the CDC
+proof — lives in [`example/`](https://github.com/toluaina/django-pgsync/tree/main/example):
+
+```bash
+cd example
+createdb django_pgsync_demo
+python manage.py migrate --run-syncdb && python manage.py seed_bookstore
+python manage.py pgsync_bootstrap && python manage.py pgsync_pull
+curl -s "localhost:9200/demo-books/_search?q=sandworms"
 ```
 
 ## Run modes
@@ -172,10 +186,13 @@ CELERY_BEAT_SCHEDULE = {
 }
 ```
 
-Each run syncs everything committed since the last checkpoint and exits.
-A cache lock prevents overlapping runs; interrupted runs resume from the
-checkpoint. Do **not** run `pgsync_daemon` inside a Celery worker — a task
-that never returns permanently occupies a worker slot.
+Each run performs one forward pass (idempotent upserts) and exits, so
+interrupted or retried runs are safe. A cache lock prevents overlapping
+runs — ticks that fire while a pull is still in flight simply skip, which
+makes short intervals (10–15s) safe. The task accepts `index` and
+`database_alias` kwargs to scope a schedule to one pipeline. Do **not**
+run `pgsync_daemon` inside a Celery worker — a task that never returns
+permanently occupies a worker slot.
 
 ## Management commands
 
@@ -187,25 +204,21 @@ that never returns permanently occupies a worker slot.
 | `pgsync_daemon` | Continuous sync (long-running) |
 | `pgsync_status` | Database row count vs index document count per index; exits non-zero on drift |
 
-All commands accept `--index <name>`, `--database <alias>` and `--mode`.
+All commands accept `--index <name>`; the ones that connect also take
+`--database <alias>` and `--mode` (`pgsync_schema` needs neither — it only
+reads model metadata).
+
+Configuration mistakes surface early: Django system checks validate the
+`PGSYNC` setting and every registered index at startup
+(`manage.py check`), so a broken relationship or misspelled setting fails
+before the first sync.
 
 ## Status
 
-Alpha. Schema generation is fully tested; runtime commands wrap the
-standard PGSync entry points.
-
-## Example project
-
-A complete runnable demo — models, index, seed data, sync, and the CDC
-proof — lives in [`example/`](https://github.com/toluaina/django-pgsync/tree/main/example):
-
-```bash
-cd example
-createdb django_pgsync_demo
-python manage.py migrate --run-syncdb && python manage.py seed_bookstore
-python manage.py pgsync_bootstrap && python manage.py pgsync_pull
-curl -s "localhost:9200/demo-books/_search?q=sandworms"
-```
+Alpha. Schema generation is fully unit-tested (44 tests), and the whole
+pipeline — bootstrap, sync, live updates via `queryset.update()` and
+`bulk_create()` — is verified end-to-end against PostgreSQL and
+Elasticsearch/OpenSearch.
 
 ## Links
 
