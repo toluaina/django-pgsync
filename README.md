@@ -3,11 +3,11 @@
 **Real-time Elasticsearch/OpenSearch indexing for Django — powered by
 [PGSync](https://github.com/toluaina/pgsync) change data capture.**
 
-[![PyPI](https://img.shields.io/pypi/v/django-pgsync)](https://pypi.org/project/django-pgsync/)
-[![Python versions](https://img.shields.io/pypi/pyversions/django-pgsync)](https://pypi.org/project/django-pgsync/)
-[![Django versions](https://img.shields.io/pypi/frameworkversions/django/django-pgsync)](https://pypi.org/project/django-pgsync/)
+[![PyPI](https://img.shields.io/pypi/v/django-pgsync?logo=pypi&logoColor=white)](https://pypi.org/project/django-pgsync/)
+[![Python versions](https://img.shields.io/pypi/pyversions/django-pgsync?logo=python&logoColor=white)](https://pypi.org/project/django-pgsync/)
+[![Django versions](https://img.shields.io/pypi/frameworkversions/django/django-pgsync?logo=django&logoColor=white)](https://pypi.org/project/django-pgsync/)
 [![Tests](https://github.com/toluaina/django-pgsync/actions/workflows/test.yml/badge.svg)](https://github.com/toluaina/django-pgsync/actions/workflows/test.yml)
-[![License](https://img.shields.io/pypi/l/django-pgsync)](https://github.com/toluaina/django-pgsync/blob/main/LICENSE)
+[![License](https://img.shields.io/pypi/l/django-pgsync?color=blue)](https://github.com/toluaina/django-pgsync/blob/main/LICENSE)
 
 Declare search indexes from your Django models — nested documents,
 relationships and all — and let PGSync keep them in sync with your
