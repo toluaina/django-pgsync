@@ -185,6 +185,7 @@ that never returns permanently occupies a worker slot.
 | `pgsync_bootstrap [--teardown]` | One-time setup (or removal) of triggers, replication slots and indices |
 | `pgsync_pull` | Single forward pass from the last checkpoint |
 | `pgsync_daemon` | Continuous sync (long-running) |
+| `pgsync_status` | Database row count vs index document count per index; exits non-zero on drift |
 
 All commands accept `--index <name>`, `--database <alias>` and `--mode`.
 
@@ -216,7 +217,8 @@ curl -s "localhost:9200/demo-books/_search?q=sandworms"
 ## Development
 
 ```bash
-pip install django ruff
+pip install django ruff pre-commit
+pre-commit install          # lint + format checked on every commit
 python tests/runtests.py
 ruff check . && ruff format --check .
 ```

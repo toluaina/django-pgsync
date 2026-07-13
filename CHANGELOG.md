@@ -28,3 +28,9 @@ Initial release.
   (`django_pgsync.conf.KNOWN_PGSYNC_SETTINGS`); the system checks warn
   about unrecognized `PGSYNC` keys so typos surface at startup
   (`django_pgsync.W002`).
+- Startup schema validation: every registered index must generate a
+  valid schema or `manage.py check` fails (`django_pgsync.E003`).
+- `pgsync_status` command comparing database row counts with search
+  index document counts; exits non-zero on drift (usable in monitoring).
+- Pre-commit configuration (ruff lint + format, whitespace/YAML/TOML
+  checks).

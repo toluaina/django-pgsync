@@ -50,3 +50,30 @@ def check_pgsync_settings(app_configs, **kwargs):
                 )
             )
     return errors
+
+
+@checks.register()
+def check_index_schemas(app_configs, **kwargs):
+    """Every registered PGSyncIndex must produce a valid schema document.
+
+    Catches broken definitions (unknown fields, uninferrable
+    relationships) at startup instead of at sync time. Uses model
+    metadata only; no database connection is made.
+    """
+    from .indexes import registry
+    from .schema import SchemaGenerationError, build_document
+
+    errors = []
+    for index_cls in registry:
+        try:
+            build_document(index_cls)
+        except SchemaGenerationError as exc:
+            errors.append(
+                checks.Error(
+                    f"PGSyncIndex {index_cls.__name__!r} "
+                    f"(index {index_cls.get_index_name()!r}) cannot "
+                    f"generate a schema: {exc}",
+                    id="django_pgsync.E003",
+                )
+            )
+    return errors
