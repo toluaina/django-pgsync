@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: PGSync (sync engine) issues
+    url: https://github.com/toluaina/pgsync/issues
+    about: Bugs in the sync engine itself (WAL, triggers, indexing) belong upstream.
+  - name: Security vulnerabilities
+    url: https://github.com/toluaina/django-pgsync/security/advisories/new
+    about: Please report security issues privately, not as public issues.

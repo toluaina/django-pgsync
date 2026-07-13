@@ -1,0 +1,38 @@
+name: Bug report
+description: Something isn't working
+labels: [bug]
+body:
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: Include the full traceback or error output if there is one.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What did you expect to happen?
+    validations:
+      required: true
+  - type: textarea
+    id: index
+    attributes:
+      label: Index definition
+      description: The relevant PGSyncIndex class (and models if the issue is relationship inference).
+      render: python
+  - type: input
+    id: mode
+    attributes:
+      label: Run mode
+      placeholder: polling / event / wal
+  - type: textarea
+    id: versions
+    attributes:
+      label: Versions
+      description: django-pgsync, pgsync, Django, Python, PostgreSQL, Elasticsearch/OpenSearch
+      placeholder: |
+        django-pgsync 0.1.0, pgsync 7.1.0, Django 5.2, Python 3.12,
+        PostgreSQL 16, OpenSearch 3.7
+    validations:
+      required: true
