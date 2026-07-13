@@ -52,6 +52,7 @@ celery = ["celery>=5.0"]
 
 [project.urls]
 Homepage = "https://pgsync.com"
+Documentation = "https://github.com/toluaina/django-pgsync#readme"
 Repository = "https://github.com/toluaina/django-pgsync"
 Issues = "https://github.com/toluaina/django-pgsync/issues"
 Changelog = "https://github.com/toluaina/django-pgsync/blob/main/CHANGELOG.md"

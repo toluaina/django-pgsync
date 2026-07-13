@@ -23,10 +23,24 @@ class BookIndex(PGSyncIndex):
     index = "books"
     fields = ["isbn", "title", "description"]
     children = [
-        Nested(Rating),                      # FK on Rating   -> one_to_many
-        Nested(Publisher, fields=["name"]),  # FK on Book     -> one_to_one
-        Nested(Author),                      # M2M            -> through table
+        Nested(Rating, fields=["value"], label="ratings"),      # one_to_many
+        Nested(Publisher, fields=["name"], label="publisher"),  # one_to_one
+        Nested(Author, fields=["name"], label="authors"),       # M2M through
     ]
+```
+
+Every committed change lands in the index as a denormalized nested
+document — this is real output, not a mock:
+
+```json
+{
+  "isbn": "9780441172719",
+  "title": "Dune",
+  "description": "Politics, religion and giant sandworms.",
+  "authors": [{"name": "Frank Herbert"}],
+  "ratings": [{"value": 5}, {"value": 5}, {"value": 4}],
+  "publisher": {"name": "Chilton Books"}
+}
 ```
 
 ## Why not signals?
@@ -79,7 +93,7 @@ PGSYNC = {
 Database credentials are taken from `DATABASES["default"]` automatically.
 Environment variables already set (e.g. `PG_PASSWORD`) always take precedence.
 `MODE` configures django-pgsync itself; every other key is passed through to
-PGSync as an environment setting — see [PGSync settings](#pgsync-settings).
+PGSync as an environment setting — see the PGSync settings section below.
 
 **2. Declare an index** in `<app>/search_indexes.py` (see the example
 above). Relationships are inferred from model metadata: foreign keys,
