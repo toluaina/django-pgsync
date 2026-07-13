@@ -157,6 +157,19 @@ All commands accept `--index <name>`, `--database <alias>` and `--mode`.
 Alpha. Schema generation is fully tested; runtime commands wrap the
 standard PGSync entry points.
 
+## Example project
+
+A complete runnable demo — models, index, seed data, sync, and the CDC
+proof — lives in [`example/`](https://github.com/toluaina/django-pgsync/tree/main/example):
+
+```bash
+cd example
+createdb django_pgsync_demo
+python manage.py migrate --run-syncdb && python manage.py seed_bookstore
+python manage.py pgsync_bootstrap && python manage.py pgsync_pull
+curl -s "localhost:9200/demo-books/_search?q=sandworms"
+```
+
 ## Links
 
 - [PGSync documentation](https://pgsync.com)
