@@ -250,6 +250,19 @@ python tests/runtests.py
 ruff check . && ruff format --check .
 ```
 
+## Releasing
+
+One command, once `CHANGELOG.md` has a `## X.Y.Z (unreleased)` section:
+
+```bash
+scripts/release.sh X.Y.Z            # add --dry-run to validate first
+```
+
+The script bumps the version, dates the changelog, waits for CI, publishes
+the GitHub release, and CI uploads to PyPI via trusted publishing — no
+tokens, no local build tools. Details and the manual fallback are in
+[RELEASING.md](https://github.com/toluaina/django-pgsync/blob/main/RELEASING.md).
+
 ## License
 
 MIT — see [LICENSE](https://github.com/toluaina/django-pgsync/blob/main/LICENSE).
