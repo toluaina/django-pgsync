@@ -3,6 +3,8 @@ name: release
 on:
   release:
     types: [published]
+  # Dry run: builds and validates the artifacts without publishing.
+  workflow_dispatch:
 
 jobs:
   build:
@@ -12,14 +14,17 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - run: pip install build
+      - run: pip install build twine
       - run: python -m build
+      - run: twine check dist/*
       - uses: actions/upload-artifact@v4
         with:
           name: dist
           path: dist/
 
   publish:
+    # Only publish for real releases, never on manual dry runs.
+    if: github.event_name == 'release'
     needs: build
     runs-on: ubuntu-latest
     environment: pypi
