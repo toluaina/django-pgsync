@@ -79,7 +79,7 @@ PGSYNC = {
 Database credentials are taken from `DATABASES["default"]` automatically.
 Environment variables already set (e.g. `PG_PASSWORD`) always take precedence.
 `MODE` configures django-pgsync itself; every other key is passed through to
-PGSync as an environment setting.
+PGSync as an environment setting — see [PGSync settings](#pgsync-settings).
 
 **2. Declare an index** in `<app>/search_indexes.py` (see the example
 above). Relationships are inferred from model metadata: foreign keys,
@@ -121,6 +121,42 @@ All commands also accept `--mode` to override the setting per invocation.
 `pgsync_bootstrap` does the right thing per mode: in `polling` it skips
 triggers and replication slots entirely; in `wal` it creates only the slot;
 in `event` it creates both.
+
+## PGSync settings
+
+Every setting PGSync reads from the environment (90+ of them) can be set
+in the `PGSYNC` dict; booleans and numbers are converted automatically.
+A system check warns about unrecognized keys, so typos surface at startup
+(`manage.py check`) instead of being silently ignored. The full list lives
+in `django_pgsync.conf.KNOWN_PGSYNC_SETTINGS`. The ones you're most likely
+to want:
+
+| Setting | Purpose | Default |
+|---|---|---|
+| `CHECKPOINT_PATH` | Directory for checkpoint files (put it somewhere persistent, outside your repo) | `./` |
+| `POLL_INTERVAL` | Seconds between passes in polling mode | `0.1` |
+| `ELASTICSEARCH_CHUNK_SIZE` | Bulk indexing batch size | `5000` |
+| `QUERY_CHUNK_SIZE` | Rows fetched per database query | `10000` |
+| `NUM_WORKERS` | Event-processing workers | `2` |
+| `ELASTICSEARCH_TIMEOUT` | Search engine request timeout (seconds) | `10` |
+| `ELASTICSEARCH_USER` / `ELASTICSEARCH_PASSWORD` | Search engine auth | — |
+| `PG_SSLMODE` | Postgres SSL mode (e.g. `require`) | — |
+| `OPENSEARCH` | Set `True` when the destination is OpenSearch | `False` |
+| `REDIS_URL` | Redis endpoint (event mode / checkpoints) | built from `REDIS_HOST`/`REDIS_PORT`/`REDIS_DB` |
+| `REDIS_CHECKPOINT` | Store checkpoints in Redis instead of files | `False` |
+| `GENERAL_LOGGING_LEVEL` | PGSync log verbosity | `DEBUG` |
+
+Example:
+
+```python
+PGSYNC = {
+    "MODE": "polling",
+    "ELASTICSEARCH_URL": "https://search.internal:9200",
+    "CHECKPOINT_PATH": "/var/lib/pgsync",
+    "POLL_INTERVAL": 5,
+    "ELASTICSEARCH_CHUNK_SIZE": 5000,
+}
+```
 
 ## Celery beat (polling mode)
 

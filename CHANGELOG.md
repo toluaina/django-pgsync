@@ -24,3 +24,7 @@ Initial release.
   to port 3306 (polling mode only; PGSync bootstrap is PostgreSQL-specific).
 - Importing `django_pgsync.tasks` without Celery raises an actionable
   error pointing at the `django-pgsync[celery]` extra.
+- Catalogue of all 90+ PGSync environment settings
+  (`django_pgsync.conf.KNOWN_PGSYNC_SETTINGS`); the system checks warn
+  about unrecognized `PGSYNC` keys so typos surface at startup
+  (`django_pgsync.W002`).

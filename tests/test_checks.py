@@ -28,6 +28,23 @@ class TestSystemChecks(unittest.TestCase):
         errors = check_pgsync_settings(None)
         self.assertEqual([e.id for e in errors], ["django_pgsync.W001"])
 
+    @override_settings(PGSYNC={"CHEKPOINT_PATH": "/var/lib/pgsync"})
+    def test_unknown_key_is_a_typo_warning(self):
+        errors = check_pgsync_settings(None)
+        self.assertEqual([e.id for e in errors], ["django_pgsync.W002"])
+
+    @override_settings(
+        PGSYNC={
+            "MODE": "polling",
+            "CHECKPOINT_PATH": "/var/lib/pgsync",
+            "POLL_INTERVAL": 10,
+            "ELASTICSEARCH_CHUNK_SIZE": 2000,
+            "PG_SSLMODE": "require",
+        }
+    )
+    def test_known_settings_pass_clean(self):
+        self.assertEqual(check_pgsync_settings(None), [])
+
 
 if __name__ == "__main__":
     unittest.main()
