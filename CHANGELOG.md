@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+
+- The `celery` extra now installs `django-celery-beat`, so the documented
+  Django database-backed beat scheduler is available after installation.
+
 ## 0.1.0 (2026-07-13)
 
 Initial release.

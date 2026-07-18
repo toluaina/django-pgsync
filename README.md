@@ -65,7 +65,7 @@ nested documents, initial bootstrap, checkpointing and crash recovery.
 
 ```bash
 pip install django-pgsync            # includes pgsync
-pip install "django-pgsync[celery]"  # with Celery beat support
+pip install "django-pgsync[celery]"  # with Celery and django-celery-beat support
 ```
 
 Requires Python 3.10+, Django 4.2+, PostgreSQL, and Elasticsearch or
@@ -189,7 +189,26 @@ PGSYNC = {
 ## Celery beat (polling mode)
 
 For near-real-time sync without a dedicated daemon process, schedule a
-periodic forward pass:
+periodic forward pass. The `celery` extra installs both Celery and
+`django-celery-beat`. Enable its database scheduler and apply its migrations:
+
+```python
+# settings.py
+INSTALLED_APPS = [
+    # ...
+    "django_celery_beat",
+    "django_pgsync",
+]
+
+CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
+```
+
+```bash
+python manage.py migrate django_celery_beat
+```
+
+Then add the task through the Django admin, or configure a periodic forward
+pass in settings:
 
 ```python
 CELERY_BEAT_SCHEDULE = {

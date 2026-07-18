@@ -48,7 +48,9 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-celery = ["celery>=5.0"]
+# ``django-celery-beat`` provides the Django database-backed scheduler.
+# Celery itself includes the beat service, but not its Django integration.
+celery = ["celery>=5.0", "django-celery-beat>=2.7"]
 
 [project.urls]
 Homepage = "https://pgsync.com"
