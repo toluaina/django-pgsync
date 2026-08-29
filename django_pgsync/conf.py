@@ -25,6 +25,8 @@ Values already present in the process environment always win.
 import os
 import typing as t
 
+from django.conf import settings
+
 SUPPORTED_ENGINES = ("postgresql", "mysql")
 
 #: polling: periodic pull; needs no wal_level=logical, replication slots,
@@ -38,7 +40,7 @@ DEFAULT_MODE = "polling"
 #: must not be exported to the environment for pgsync.
 RESERVED_KEYS = ("MODE",)
 
-#: Every environment setting pgsync 7.1.x reads (extracted from
+#: Every environment setting pgsync 7.3.x reads (extracted from
 #: pgsync/settings.py). Any of these can be set in the PGSYNC dict.
 #: The system checks warn about keys not in this list (probable typos);
 #: unknown keys are still exported, so newer pgsync settings keep working.
@@ -152,8 +154,6 @@ def get_mode() -> str:
     Defaults to "polling", the only mode that requires no superuser-level
     PostgreSQL settings (wal_level, replication slots, triggers).
     """
-    from django.conf import settings
-
     mode = getattr(settings, "PGSYNC", {}).get("MODE", DEFAULT_MODE)
     if mode not in MODES:
         raise RuntimeError(f"Invalid PGSYNC['MODE'] {mode!r}; expected one of {MODES}")
@@ -166,8 +166,6 @@ def mode_flags(mode: str) -> t.Dict[str, bool]:
 
 
 def export_pgsync_env(database_alias: str = "default") -> None:
-    from django.conf import settings
-
     db: dict = settings.DATABASES[database_alias]
     engine: str = db.get("ENGINE", "")
     if not any(name in engine for name in SUPPORTED_ENGINES):

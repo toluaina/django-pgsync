@@ -18,14 +18,15 @@ database. No signals, no `save()` overrides, no missed writes.
 from django_pgsync import PGSyncIndex, Nested
 from .models import Author, Book, Publisher, Rating
 
+
 class BookIndex(PGSyncIndex):
     model = Book
     index = "books"
     fields = ["isbn", "title", "description"]
     children = [
-        Nested(Rating, fields=["value"], label="ratings"),      # one_to_many
+        Nested(Rating, fields=["value"], label="ratings"),  # one_to_many
         Nested(Publisher, fields=["name"], label="publisher"),  # one_to_one
-        Nested(Author, fields=["name"], label="authors"),       # M2M through
+        Nested(Author, fields=["name"], label="authors"),  # M2M through
     ]
 ```
 
@@ -68,7 +69,7 @@ pip install django-pgsync            # includes pgsync
 pip install "django-pgsync[celery]"  # with Celery and django-celery-beat support
 ```
 
-Requires Python 3.10+, Django 4.2+, PostgreSQL, and Elasticsearch or
+Requires Python 3.10+, Django 5.2+, PostgreSQL, and Elasticsearch or
 OpenSearch. MySQL/MariaDB works in `polling` mode only (PGSync's
 bootstrap is PostgreSQL-specific; skip `pgsync_bootstrap`).
 
@@ -263,7 +264,7 @@ Elasticsearch/OpenSearch.
 ## Development
 
 ```bash
-pip install django ruff pre-commit
+pip install --group dev -e .
 pre-commit install          # lint + format checked on every commit
 python tests/runtests.py
 ruff check . && ruff format --check .

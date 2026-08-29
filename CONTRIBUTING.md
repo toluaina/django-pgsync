@@ -37,7 +37,7 @@ ruff check . && ruff format --check .
 4. Update `CHANGELOG.md` under the `(unreleased)` section and the README
    if behavior changes.
 5. Open a pull request. CI runs the test matrix (Python 3.10–3.14 ×
-   Django 4.2–6.0) and lint; everything must be green.
+   Django 5.2–6.1) and lint; everything must be green.
 
 ## Guidelines
 

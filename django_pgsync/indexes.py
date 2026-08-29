@@ -18,6 +18,8 @@ Usage (in <app>/search_indexes.py)::
 
 import typing as t
 
+from django.conf import settings
+
 
 class Nested:
     """A child node in the document tree, backed by a Django model."""
@@ -125,8 +127,6 @@ class PGSyncIndex(metaclass=PGSyncIndexMeta):
 
     @classmethod
     def get_database_name(cls) -> str:
-        from django.conf import settings
-
         return settings.DATABASES[cls.database_alias]["NAME"]
 
     @classmethod

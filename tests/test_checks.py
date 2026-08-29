@@ -1,7 +1,9 @@
 import unittest
 
 from django.test import override_settings
+from testapp.models import Author, Publisher
 
+from django_pgsync import Nested, PGSyncIndex, registry
 from django_pgsync.checks import check_index_schemas, check_pgsync_settings
 
 
@@ -48,13 +50,9 @@ class TestSystemChecks(unittest.TestCase):
 
 class TestSchemaChecks(unittest.TestCase):
     def setUp(self):
-        from django_pgsync import registry
-
         self._snapshot = dict(registry._indexes)
 
     def tearDown(self):
-        from django_pgsync import registry
-
         registry._indexes.clear()
         registry._indexes.update(self._snapshot)
 
@@ -62,10 +60,6 @@ class TestSchemaChecks(unittest.TestCase):
         self.assertEqual(check_index_schemas(None), [])
 
     def test_broken_index_is_an_error(self):
-        from testapp.models import Author, Publisher
-
-        from django_pgsync import Nested, PGSyncIndex
-
         class BrokenIndex(PGSyncIndex):
             model = Publisher
             index = "broken"

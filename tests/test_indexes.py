@@ -2,6 +2,8 @@
 
 import unittest
 
+from testapp.models import Publisher
+
 from django_pgsync import PGSyncIndex, registry
 
 
@@ -19,8 +21,6 @@ class TestRegistry(unittest.TestCase):
         self.assertIn("books", str(ctx.exception))
 
     def test_abstract_index_is_not_registered(self):
-        from testapp.models import Publisher
-
         class AbstractIndex(PGSyncIndex):
             abstract = True
             model = Publisher
@@ -30,16 +30,12 @@ class TestRegistry(unittest.TestCase):
             registry.get("should_not_register")
 
     def test_index_name_defaults_to_db_table(self):
-        from testapp.models import Publisher
-
         class PublisherIndex(PGSyncIndex):
             model = Publisher
 
         self.assertIs(registry.get("publisher"), PublisherIndex)
 
     def test_document_level_settings(self):
-        from testapp.models import Publisher
-
         class FancyIndex(PGSyncIndex):
             model = Publisher
             index = "fancy"
@@ -58,8 +54,6 @@ class TestRegistry(unittest.TestCase):
         self.assertEqual(document["routing"], "id")
 
     def test_document_omits_unset_optional_keys(self):
-        from testapp.models import Publisher
-
         class PlainIndex(PGSyncIndex):
             model = Publisher
             index = "plain"

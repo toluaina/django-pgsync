@@ -32,6 +32,8 @@ except ImportError as exc:  # pragma: no cover - exercised without celery
 
 from django.core.cache import cache
 
+from .conf import export_pgsync_env, get_mode
+
 logger = logging.getLogger(__name__)
 
 #: Safety valve: the lock expires even if a worker is SIGKILLed mid-pull.
@@ -45,8 +47,6 @@ def pgsync_pull(
     database_alias: str = "default",
 ):
     """Run one PGSync forward pass for one index, or all registered ones."""
-    from .conf import export_pgsync_env, get_mode
-
     export_pgsync_env(database_alias)
     # In polling mode (the default) validation skips replication
     # slot/wal_level checks, so no superuser Postgres settings are needed.

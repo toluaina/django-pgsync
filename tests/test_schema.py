@@ -1,7 +1,11 @@
 import unittest
 
+from testapp.models import Author, Book, Publisher
+
+from django_pgsync import Nested
 from django_pgsync.schema import (
     SchemaGenerationError,
+    build_child_node,
     build_documents,
     model_columns,
 )
@@ -10,8 +14,6 @@ from django_pgsync.schema import (
 class TestSchemaGeneration(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        from testapp.models import Book
-
         cls.Book = Book
         cls.document = build_documents("books")[0]
         cls.nodes = cls.document["nodes"]
@@ -91,11 +93,6 @@ class TestSchemaGeneration(unittest.TestCase):
             model_columns(self.Book, fields=["nope"])
 
     def test_unrelated_child_raises(self):
-        from testapp.models import Author, Publisher
-
-        from django_pgsync import Nested
-        from django_pgsync.schema import build_child_node
-
         with self.assertRaises(SchemaGenerationError):
             build_child_node(Publisher, Nested(Author))
 

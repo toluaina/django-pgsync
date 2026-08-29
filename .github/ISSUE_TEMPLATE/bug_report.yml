@@ -32,7 +32,7 @@ body:
       label: Versions
       description: django-pgsync, pgsync, Django, Python, PostgreSQL, Elasticsearch/OpenSearch
       placeholder: |
-        django-pgsync 0.1.0, pgsync 7.1.0, Django 5.2, Python 3.12,
+        django-pgsync 0.1.0, pgsync 7.3.0, Django 6.1, Python 3.14,
         PostgreSQL 16, OpenSearch 3.7
     validations:
       required: true

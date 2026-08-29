@@ -6,4 +6,6 @@ dist/
 build/
 .venv/
 venv/
+AGENTS.md
+CLAUDE.md
 .DS_Store

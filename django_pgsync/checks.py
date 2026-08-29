@@ -1,14 +1,15 @@
 """Django system checks: surface configuration mistakes at startup."""
 
+from django.conf import settings
 from django.core import checks
 
 from .conf import DEFAULT_MODE, KNOWN_PGSYNC_SETTINGS, MODES, RESERVED_KEYS
+from .indexes import registry
+from .schema import SchemaGenerationError, build_document
 
 
 @checks.register()
 def check_pgsync_settings(app_configs, **kwargs):
-    from django.conf import settings
-
     errors = []
     pgsync = getattr(settings, "PGSYNC", {})
     if not isinstance(pgsync, dict):
@@ -60,9 +61,6 @@ def check_index_schemas(app_configs, **kwargs):
     relationships) at startup instead of at sync time. Uses model
     metadata only; no database connection is made.
     """
-    from .indexes import registry
-    from .schema import SchemaGenerationError, build_document
-
     errors = []
     for index_cls in registry:
         try:
