@@ -22,9 +22,12 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ["3.10", "3.11", "3.12", "3.13", "3.14"]
+        python-version: ["3.10", "3.11", "3.12", "3.13", "3.14", "3.15"]
         django-version: ["5.2", "6.0", "6.1"]
         exclude:
+          # Django 5.2 supports Python <= 3.14.
+          - python-version: "3.15"
+            django-version: "5.2"
           # Django 6.0 and 6.1 require Python >= 3.12.
           - python-version: "3.10"
             django-version: "6.0"

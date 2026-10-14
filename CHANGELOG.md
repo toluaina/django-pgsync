@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Add Python 3.15 support.
 - The `celery` extra now installs `django-celery-beat`, so the documented
   Django database-backed beat scheduler is available after installation.
 
